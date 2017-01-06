@@ -50,7 +50,7 @@ public class Weapon : MonoBehaviour {
             vfx.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
 
             Destroy(vfx, 1.0f);
-            var rc = new Ray(_barrel.transform.position, _camera.transform.forward);
+            var rc = new Ray(_camera.transform.position, _camera.transform.forward);
             var hit = new RaycastHit();
 
             if (Physics.Raycast(rc, out hit))
