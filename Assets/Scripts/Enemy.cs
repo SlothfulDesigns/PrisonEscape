@@ -12,7 +12,8 @@ public class Enemy : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+        _audioSource = this.GetComponent<AudioSource>();
+        _ded = Resources.Load<AudioClip>("dead");
 	}
 	
 	// Update is called once per frame
@@ -29,9 +30,16 @@ public class Enemy : MonoBehaviour {
 
     public void Damage(int damage) {
         this.hitpoints -= damage;
+
+        if(this.hitpoints <= 0)
+        {
+            this.kill();
+        }
     }
+
     private void kill(){
-        _audioSource.PlayOneShot(_ded);
+        Debug.Log(this.name + " ded.");
         this.dead = true;
+        _audioSource.PlayOneShot(_ded);
     }
 }
