@@ -29,7 +29,7 @@ public class Weapon : MonoBehaviour {
         _shotSfx = Resources.Load<AudioClip>("SHOT");
         _click = Resources.Load<AudioClip>("Click");
 
-        _shotVfx = Resources.Load<GameObject>("Smoke");
+        _shotVfx = Resources.Load<GameObject>("Flare");
         _hitVfx = Resources.Load<GameObject>("Flare");
 
         _player = this.GetComponentInParent<PlayerController>();
@@ -46,10 +46,11 @@ public class Weapon : MonoBehaviour {
         {
             _player.ammo--;
             _audioSource.PlayOneShot(_shotSfx);
+
             var vfx = Instantiate(_shotVfx, _barrel.transform.position, _barrel.transform.rotation);
             vfx.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+            Destroy(vfx, 0.05f);
 
-            Destroy(vfx, 1.0f);
             var rc = new Ray(_camera.transform.position, _camera.transform.forward);
             var hit = new RaycastHit();
 
