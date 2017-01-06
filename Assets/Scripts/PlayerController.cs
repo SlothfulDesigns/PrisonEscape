@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     #region public figures
 
     public int hitpoints = 100;
+    public int ammo = 6;
 
     #endregion
 
@@ -17,6 +18,8 @@ public class PlayerController : MonoBehaviour
     private CharacterController _cc;
     private Camera _camera;
     private Weapon _weapon;
+
+
 
     private bool _alive = false;
 
@@ -28,17 +31,31 @@ public class PlayerController : MonoBehaviour
         _cc = this.GetComponent<CharacterController>();
         _camera = this.GetComponent<Camera>();
         _weapon = this.GetComponentInChildren<Weapon>();
+
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-        if (Input.GetButtonDown("Fire1")){
+        if (Input.GetButtonDown("Fire1"))
+        {
             if (_weapon != null)
             {
                 Debug.Log("Shooting " + _weapon.name);
                 _weapon.Shoot();
             }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        var pickup = other.GetComponent<Pickup>();
+        if(pickup != null)
+        {
+            Debug.Log("Picked up: " + pickup.ammo + " ammo");
+            this.ammo += pickup.ammo;
+            pickup.Take();
+
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class Weapon : MonoBehaviour {
 
-    public int ammo = 10;
     public int damage = 100;
+
+    private PlayerController _player;
 
     private AudioSource _audioSource;
     private Camera _camera;
@@ -17,6 +17,8 @@ public class Weapon : MonoBehaviour {
 
     private GameObject _barrel;
 
+    private int _ammo;
+
 	// Use this for initialization
 	void Start () {
         _camera = Camera.main;
@@ -25,22 +27,24 @@ public class Weapon : MonoBehaviour {
         _barrel = GameObject.Find("Barrel");
 
         _shotSfx = Resources.Load<AudioClip>("SHOT");
+        _click = Resources.Load<AudioClip>("Click");
+
         _shotVfx = Resources.Load<GameObject>("Smoke");
         _hitVfx = Resources.Load<GameObject>("Flare");
 
-        _lineRenderer = this.GetComponent<LineRenderer>();
+        _player = this.GetComponentInParent<PlayerController>();
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
 	}
 
     public void Shoot()
     {
-        if (ammo > 0)
+        if (_player.ammo > 0)
         {
-            ammo--;
+            _player.ammo--;
             _audioSource.PlayOneShot(_shotSfx);
             var vfx = Instantiate(_shotVfx, _barrel.transform.position, _barrel.transform.rotation);
             vfx.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
@@ -62,9 +66,9 @@ public class Weapon : MonoBehaviour {
                 Destroy(hitVfx, 0.1f);
             }
         }
-        else {
+        else
+        {
             _audioSource.PlayOneShot(_click);
-
         }
     }
 }
