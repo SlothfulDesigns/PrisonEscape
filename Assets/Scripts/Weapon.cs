@@ -61,5 +61,9 @@ public class Weapon : MonoBehaviour {
                 Destroy(hitVfx, 0.1f);
             }
         }
-     }
+        else {
+            _audioSource.PlayOneShot(_click);
+
+        }
+    }
 }
