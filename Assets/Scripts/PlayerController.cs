@@ -1,61 +1,44 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Camera))]
 public class PlayerController : MonoBehaviour
 {
 
     #region public figures
 
-    public float mouseSensitivityX = 10.0f;
-    public float mouseSensitivityY = 10.0f;
-
-    public float moveSpeed = 10.0f;
-    public float jumpSpeed = 8.0f;
-
-    public float gravity = 9.807f;
+    public int hitpoints = 100;
 
     #endregion
 
     #region private parts
 
-    private float _positionX = 0.0f;
-    private float _positionY = 0.0f;
-    private float _rotationX = 0.0f;
-    private float _rotationY = 0.0f;
+    private CharacterController _cc;
+    private Camera _camera;
+    private Weapon _weapon;
+
+    private bool _alive = false;
 
     #endregion
 
     // Use this for initialization
     void Start ()
     {
-	}
+        _cc = this.GetComponent<CharacterController>();
+        _camera = this.GetComponent<Camera>();
+        _weapon = this.GetComponentInChildren<Weapon>();
+    }
 	
 	// Update is called once per frame
 	void Update ()
     {
-        Look();
-        Move();
-    }
-
-    private void Move()
-    {
-        var v = Input.GetAxis("Vertical");
-        var h = Input.GetAxis("Horizontal");
-
-        transform.localPosition += 0.01f * (new Vector3(h, 0.0f, v) * moveSpeed);
-    }
-
-    private void Look()
-    {
-        _rotationX += Input.GetAxis("Mouse X") * (mouseSensitivityX * 0.1f);
-        _rotationY += Input.GetAxis("Mouse Y") * (mouseSensitivityY * 0.1f);
-
-        transform.localRotation = Quaternion.AngleAxis(_rotationX, Vector3.up);
-        transform.localRotation *= Quaternion.AngleAxis(_rotationY, Vector3.left);
-    }
-
-    private void Shoot(int weapon)
-    {
-
+        if (Input.GetButtonDown("Fire1")){
+            if (_weapon != null)
+            {
+                Debug.Log("Shooting " + _weapon.name);
+                _weapon.Shoot();
+            }
+        }
     }
 }
