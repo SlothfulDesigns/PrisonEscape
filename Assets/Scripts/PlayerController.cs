@@ -37,11 +37,10 @@ public class PlayerController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButton("Fire1"))
         {
             if (_weapon != null)
             {
-                Debug.Log("Shooting " + _weapon.name);
                 _weapon.Shoot();
             }
         }

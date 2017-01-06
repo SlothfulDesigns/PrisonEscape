@@ -11,35 +11,44 @@ public class Enemy : MonoBehaviour {
 
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
         _audioSource = this.GetComponent<AudioSource>();
         _ded = Resources.Load<AudioClip>("dead");
 	}
 	
 	// Update is called once per frame
-	private void Update () {
-
-        if (!dead && hitpoints <= 0) {
+	private void Update ()
+    {
+        if (!dead && hitpoints <= 0)
+        {
             kill();
-        }
-        //play sound before destroying
-        if (dead && !_audioSource.isPlaying) {
-            Destroy(this.gameObject);
         }
 	}
 
-    public void Damage(int damage) {
-        this.hitpoints -= damage;
-
-        if(this.hitpoints <= 0)
+    public void Damage(int damage)
+    {
+        if (!this.dead)
         {
-            this.kill();
+            this.hitpoints -= damage;
+
+            if (this.hitpoints <= 0)
+            {
+                this.kill();
+            }
         }
     }
 
-    private void kill(){
-        Debug.Log(this.name + " ded.");
-        this.dead = true;
-        _audioSource.PlayOneShot(_ded);
+    private void kill()
+    {
+        if (!this.dead)
+        {
+            Debug.Log(this.name + " ded.");
+            this.dead = true;
+            _audioSource.PlayOneShot(_ded);
+
+            // destroy object after one sec
+            Destroy(this.gameObject, 1);
+        }
     }
 }

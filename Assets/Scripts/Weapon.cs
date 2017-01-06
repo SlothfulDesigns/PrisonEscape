@@ -3,9 +3,17 @@
 public class Weapon : MonoBehaviour {
 
     public int damage = 100;
+    public float fireRate = 1.0f; // shots per second if you hold down the buttan
 
+    private int _ammo; // quick reference to player's ammo count
+    private float _lastShot = 0.0f;
+
+    // objects'n'shit
     private PlayerController _player;
+    private Camera _camera;
+    private GameObject _barrel;
 
+    // head bobbing things
     private Vector3 _bobMidpoint;
     private float _bobSpeed = 0.2f;
     private float _bobAmountX = 0.002f;
@@ -14,45 +22,59 @@ public class Weapon : MonoBehaviour {
     private float _bobTimer = 0.0f;
     private float _bobWave = 0.0f;
 
+    // audio FX
     private AudioSource _audioSource;
-    private Camera _camera;
-    private LineRenderer _lineRenderer;
-
     private AudioClip _shotSfx;
     private AudioClip _click;
+
+    // visual FX 
     private GameObject _shotVfx;
     private GameObject _hitVfx;
+    private LineRenderer _lineRenderer;
 
-    private GameObject _barrel;
-
-    private int _ammo;
 
 	// Use this for initialization
-	void Start () {
+	private void Start () {
+        // basic stuff
+        _player = this.GetComponentInParent<PlayerController>();
         _camera = Camera.main;
         _bobMidpoint = this.transform.localPosition;
-
-
-        _audioSource = this.GetComponent<AudioSource>();
-
         _barrel = GameObject.Find("Barrel");
 
+        // SFX
+        _audioSource = this.GetComponent<AudioSource>();
         _shotSfx = Resources.Load<AudioClip>("SHOT");
         _click = Resources.Load<AudioClip>("Click");
 
+        // VFX
         _shotVfx = Resources.Load<GameObject>("Flare");
         _hitVfx = Resources.Load<GameObject>("Flare");
 
-        _player = this.GetComponentInParent<PlayerController>();
-
+        _lastShot = fireRate; // so we can start shooting right away
 	}
-	
-	// Update is called once per frame
-	void Update ()
+
+    private void FixedUpdate()
+    {
+        _lastShot += Time.deltaTime;
+    }
+
+    // Update is called once per frame
+    private void Update ()
     {
         WeaponSway();
 	}
 
+    private bool CanShoot()
+    {
+        var canShoot = true;
+
+        // check firerate
+        if (_lastShot < fireRate) return false;
+
+        return canShoot;
+    }
+
+    // swing the wepan around while we go
     private void WeaponSway()
     {
         var h = Mathf.Abs(Input.GetAxis("Horizontal"));
@@ -89,8 +111,12 @@ public class Weapon : MonoBehaviour {
 
     public void Shoot()
     {
-        if (_player.ammo > 0)
+
+        if (!CanShoot()) return;
+
+        if (_player.ammo > 0 && CanShoot())
         {
+            _lastShot = 0.0f;
             _player.ammo--;
             _audioSource.PlayOneShot(_shotSfx);
 
@@ -105,9 +131,8 @@ public class Weapon : MonoBehaviour {
             {
 
                 var enemy = hit.collider.GetComponentInParent<Enemy>();
-                if (enemy != null)
+                if (enemy != null && !enemy.dead)
                 {
-                    Debug.Log("Hit " + enemy.name + " with " + this.name + " for " + this.damage + " damage.");
                     enemy.Damage(this.damage);
                 }
                 var hitVfx = Instantiate(_hitVfx, hit.point, Quaternion.identity);
@@ -116,7 +141,10 @@ public class Weapon : MonoBehaviour {
         }
         else
         {
-            _audioSource.PlayOneShot(_click);
+            if(Input.GetButtonDown("Fire1"))
+            {
+                _audioSource.PlayOneShot(_click);
+            }
         }
     }
 }
