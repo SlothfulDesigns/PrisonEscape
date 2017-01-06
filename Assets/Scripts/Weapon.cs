@@ -11,6 +11,7 @@ public class Weapon : MonoBehaviour {
     private LineRenderer _lineRenderer;
 
     private AudioClip _shotSfx;
+    private AudioClip _click;
     private GameObject _shotVfx;
     private GameObject _hitVfx;
 
