@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Weapon : MonoBehaviour {
 
+    public int ammo = 10;
     public int damage = 100;
 
     private AudioSource _audioSource;
@@ -36,25 +37,29 @@ public class Weapon : MonoBehaviour {
 
     public void Shoot()
     {
-        _audioSource.PlayOneShot(_shotSfx);
-        var vfx = Instantiate(_shotVfx, _barrel.transform.position, _barrel.transform.rotation);
-        vfx.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
-
-        Destroy(vfx, 1.0f);
-        var rc = new Ray(_barrel.transform.position, _camera.transform.forward);
-        var hit = new RaycastHit();
-
-        if(Physics.Raycast(rc, out hit))
+        if (ammo > 0)
         {
+            ammo--;
+            _audioSource.PlayOneShot(_shotSfx);
+            var vfx = Instantiate(_shotVfx, _barrel.transform.position, _barrel.transform.rotation);
+            vfx.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
 
-            var enemy = hit.collider.GetComponentInParent<Enemy>();
-            if (enemy != null)
+            Destroy(vfx, 1.0f);
+            var rc = new Ray(_barrel.transform.position, _camera.transform.forward);
+            var hit = new RaycastHit();
+
+            if (Physics.Raycast(rc, out hit))
             {
-                Debug.Log("Hit " + enemy.name + " with " + this.name + " for " + this.damage + " damage.");
-                enemy.Damage(this.damage);
+
+                var enemy = hit.collider.GetComponentInParent<Enemy>();
+                if (enemy != null)
+                {
+                    Debug.Log("Hit " + enemy.name + " with " + this.name + " for " + this.damage + " damage.");
+                    enemy.Damage(this.damage);
+                }
+                var hitVfx = Instantiate(_hitVfx, hit.point, Quaternion.identity);
+                Destroy(hitVfx, 0.1f);
             }
-            var hitVfx = Instantiate(_hitVfx, hit.point, Quaternion.identity);
-            Destroy(hitVfx, 0.1f);
         }
-    }
+     }
 }
