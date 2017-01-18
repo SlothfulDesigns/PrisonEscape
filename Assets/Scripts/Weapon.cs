@@ -61,7 +61,8 @@ public class Weapon : MonoBehaviour {
     // Update is called once per frame
     private void Update ()
     {
-        WeaponSway();
+        if(_player.IsMoving())
+            WeaponSway();
 	}
 
     private bool CanShoot()
