@@ -2,7 +2,6 @@
 
 [RequireComponent(typeof(InputController))]
 [RequireComponent(typeof(CharacterController))]
-[RequireComponent(typeof(Camera))]
 public class PlayerController : MonoBehaviour
 {
 
@@ -84,16 +83,13 @@ public class PlayerController : MonoBehaviour
 
         if (m_playerController.isGrounded)
         {
-            m_vSpeed = 0.0f;
             if (m_inputController.Jump())
             {
                 m_vSpeed = jumpSpeed;
             }
         }
-        else
-        {
-            m_vSpeed -= 9.81f * Time.deltaTime;
-        }
+
+        m_vSpeed -= 9.81f * Time.deltaTime;
 
         m_moveDirection.z = m_move.z * runSpeed;
         m_moveDirection.x = m_move.x * runSpeed;
