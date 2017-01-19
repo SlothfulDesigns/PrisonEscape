@@ -113,9 +113,13 @@ public class PlayerController : MonoBehaviour
             m_playerCamera.enabled = false;
             m_droneCamera.enabled = true;
 
-            //Switch controls
+            // Switch controls
             m_playerController.enabled = false;
             m_droneController.enabled = true;
+
+            // Enable cursor
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
     }
 
