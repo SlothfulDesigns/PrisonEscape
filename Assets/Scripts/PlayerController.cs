@@ -22,13 +22,12 @@ public class PlayerController : MonoBehaviour
     private Vector3 m_mouseLook;
 
     private InputController m_inputController;
-    private CharacterController m_playerController;
-    private CharacterController m_droneController;
+    private CharacterController m_characterController;
 
-    private Rigidbody m_rigidBody;
+    private PlayerController m_playerController;
+    private DroneController m_droneController;
 
     private Weapon m_weapon;
-
     private GameObject m_drone;
     private Camera m_playerCamera;
     private Camera m_droneCamera;
@@ -45,11 +44,10 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        m_rigidBody = this.GetComponent<Rigidbody>();
-
         m_inputController = GetComponent<InputController>();
+        m_characterController = this.GetComponent<CharacterController>();
+        m_playerController = this.GetComponent<PlayerController>();
 
-        m_playerController = this.GetComponent<CharacterController>();
         m_playerCamera = this.GetComponentInChildren<Camera>();
         m_playerCamera.enabled = true;
         m_lookDirection = transform.forward;
@@ -60,7 +58,7 @@ public class PlayerController : MonoBehaviour
         m_drone = GameObject.Find("Drone");
         m_droneCamera = m_drone.GetComponentInChildren<Camera>();
         m_droneCamera.enabled = false;
-        m_droneController = m_drone.GetComponent<CharacterController>();
+        m_droneController = m_drone.GetComponent<DroneController>();
         m_droneController.enabled = false;
     }
 	
@@ -81,7 +79,7 @@ public class PlayerController : MonoBehaviour
         var m = m_inputController.GetMovement();
         Vector3 m_move = transform.forward * m.y + transform.right * m.x;
 
-        if (m_playerController.isGrounded)
+        if (m_characterController.isGrounded)
         {
             if (m_inputController.Jump())
             {
@@ -95,7 +93,7 @@ public class PlayerController : MonoBehaviour
         m_moveDirection.x = m_move.x * runSpeed;
         m_moveDirection.y = m_vSpeed;
 
-        m_playerController.Move(m_moveDirection * Time.deltaTime);
+        m_characterController.Move(m_moveDirection * Time.deltaTime);
 
         /***********/
         /* ACTIONS */
@@ -116,6 +114,7 @@ public class PlayerController : MonoBehaviour
             m_droneCamera.enabled = true;
 
             //Switch controls
+            m_playerController.enabled = false;
             m_droneController.enabled = true;
         }
     }

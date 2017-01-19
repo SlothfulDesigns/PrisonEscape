@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(InputController))]
+[RequireComponent(typeof(CharacterController))]
 public class DroneController : MonoBehaviour {
 
     private DroneController _droneController;
@@ -14,7 +16,7 @@ public class DroneController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        _player = GameObject.Find("Drone");
+        _player = GameObject.Find("Player");
         _playerCamera = _player.GetComponentInChildren<Camera>();
         _playerController = _player.GetComponent<PlayerController>();
 
